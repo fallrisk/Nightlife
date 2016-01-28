@@ -30,7 +30,7 @@ const router = new Router(on => {
     //const yelpResults = await fetch(`https://api.yelp.com/v2/search/?term=${state.query.q}&location=Rocklin, CA&offset=0&limit=10&radius_filter=20000`, );
     //console.log(yelpResults);
     if (typeof state.query.q !== 'undefined') {
-      return <SearchResults query={state.query.q} results={null} />
+      return <SearchResults />
     } else {
       return <MainPage />;
     }

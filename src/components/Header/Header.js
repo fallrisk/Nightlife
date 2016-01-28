@@ -37,7 +37,7 @@ const appBarStyles = {
   height: '200px',
   background: 'none',
   backgroundImage: `url('google_inspired_wallpaper__night__by_brebenel_silviu-d6pg3lr.jpg')`,
-  backgroundPosition: '80% 100%', // THis is fucking cool. This is how I will do simple parallax effect.
+  backgroundPosition: '60% 50%', // THis is fucking cool. This is how I will do simple parallax effect.
   marginBottom: '10px',
 }
 
