@@ -27,9 +27,12 @@ const router = new Router(on => {
   });
 
   on('/', async (state) => {
-    //const yelpResults = await fetch(`https://api.yelp.com/v2/search/?term=${state.query.q}&location=Rocklin, CA&offset=0&limit=10&radius_filter=20000`, );
-    //console.log(yelpResults);
     if (typeof state.query.q !== 'undefined') {
+      //const yelpResults = await fetch(`https://api.yelp.com/v2/search/?term=bar&location=${state.query.q}&offset=0&limit=20&radius_filter=20000`)
+      //  .then(res => {
+      //    return res.json();
+      //  });
+      //console.log(yelpResults);
       return <SearchResults />
     } else {
       return <MainPage />;
