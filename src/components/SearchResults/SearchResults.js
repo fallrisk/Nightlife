@@ -11,6 +11,7 @@ import React, { Component, PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './SearchResults.scss';
 import Location from '../../core/Location';
+import withViewport from '../withViewport';
 
 import GridList from 'material-ui/lib/grid-list/grid-list';
 import GridTile from 'material-ui/lib/grid-list/grid-tile';
@@ -1056,18 +1057,10 @@ const styles = {
     float: 'right',
   },
   imGoingButtonContainer: {
-    display: 'inline-block',
+    position: 'relative',
+    top: '-36px',
+    left: '138px',
   },
-  ftb: {
-    fontSize: 16,
-    //display: 'inline-block',
-    padding: 0,
-    margin: 0,
-    border: 0,
-    textTransform: 'none',
-    fontWeight: 'normal',
-    lineHeight: 'inherit',
-  }
 };
 
 function getRandomIntInclusive(min, max) {
@@ -1106,23 +1099,30 @@ class SearchResults extends Component {
     // If width is greater than 900 show 4 cols
     // If width is greater than 723 and less than 900 show 3
     // If width is greater than
+    // 221
+    const cellWidth = 182;
+    const cellHeight = 244;
+    const cellPadding = 4;
+    const { viewportWidth, height } = this.props.viewport;
+    var cols = (viewportWidth - 100) / (cellWidth + 2 * cellPadding);
+    cols = 4;
+    styles.gridList.width = cols * (cellWidth + 2 * cellPadding);
+
 
     return (
       <div className={s.root}>
         <div className={s.container}>
           <div className={styles.root}>
-            <GridList cols={4} cellHeight={240} padding={4} style={styles.gridList}>
+            <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
               {_sampleData.businesses.map(business => (
                 <GridTile key={business.name} style={styles.gridTile}
                           cols={1} rows={1}>
-                  <div className={s.gridTopInfoContainer} onClick={this._handleTileClick}>
-                    <div className={s.gridAttendees}>There are {19} attendees</div>
-                  </div>
                   <div className={s.gridImageContainer} onClick={this._handleTileClick}>
                     <img className={s.gridImage} src={business.image_url}/>
                   </div>
                   <div className={s.gridInfoContainer}>
                     <div className={s.gridTitle} onClick={this._handleTileClick}>{business.name}</div>
+                    <div className={s.gridAttendees} onClick={this._handleTileClick}>19 attendees</div>
                     <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
                                 onClick={this._handleAttending} rippleColor="whitesmoke" tooltipPosition="top-left">
                       <FontIcon className="material-icons" style={styles.imGoingButton} color={'whitesmoke'}>plus_one</FontIcon>
@@ -1139,4 +1139,4 @@ class SearchResults extends Component {
 
 }
 
-export default withStyles(SearchResults, s);
+export default withViewport(withStyles(SearchResults, s));

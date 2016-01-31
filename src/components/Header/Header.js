@@ -72,8 +72,8 @@ class Header extends Component {
           onLeftIconButtonTouchTap={open => this.setState({open})}
           iconElementRight={
             <div>
-              <IconButton onClick={this._handleSearch}>
-                <FontIcon className="material-icons" style={iconStyles} color={Colors.blue50}>search</FontIcon>
+              <IconButton>
+                <FontIcon className="material-icons" style={iconStyles} color={Colors.blue50}>person</FontIcon>
               </IconButton>
             </div>
           }

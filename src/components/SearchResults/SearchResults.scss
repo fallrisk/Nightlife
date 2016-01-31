@@ -24,41 +24,55 @@
   height: 48px;
 }
 
-.gridAttendees {
-  //margin: 16px 0 0 16px;
-  padding-top: 16px;
-  padding-left: 16px;
-  font-size: 16px;
-  //width: 140px;
-  color: whitesmoke;
-}
-
 .gridImageContainer {
   width: 100%;
   display: block;
   background-color: #263257;
   margin: 0;
-  padding: 10px 0;
-  height: 124px;
+  padding: 0;
+  height: 176px;
 }
 
 .gridImage {
+  position: relative;
   display: block;
   width: 100px;
   height: 100px;
-  margin: 0 auto;
+  margin: auto auto;
+  top: 40px;
   padding: 0;
 }
 
 .gridInfoContainer {
   background-color: #3E3E3E;
-  height: 48px;
+  height: 68px;
 }
 
 .gridTitle {
   /* TRBL */
-  margin: 6px 0 0px 16px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  top: 16px;
+  left: 16px;
 
+  font-size: 16px;
+  width: 120px;
+  color: whitesmoke;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: inline-block;
+}
+
+.gridAttendees {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  top: 16px;
+  left: 16px;
   font-size: 16px;
   width: 140px;
   color: whitesmoke;
@@ -69,4 +83,3 @@
 
   display: inline-block;
 }
-
