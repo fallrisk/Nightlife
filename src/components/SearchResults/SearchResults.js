@@ -12,6 +12,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './SearchResults.scss';
 import Location from '../../core/Location';
 import withViewport from '../withViewport';
+import fetch from '../../core/fetch';
 
 import GridList from 'material-ui/lib/grid-list/grid-list';
 import GridTile from 'material-ui/lib/grid-list/grid-tile';
@@ -19,6 +20,7 @@ import IconButton from 'material-ui/lib/icon-button';
 import FontIcon from 'material-ui/lib/font-icon';
 import Paper from 'material-ui/lib/paper';
 import FlatButton from 'material-ui/lib/flat-button';
+import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 
 const title = 'Nightlife';
 
@@ -1063,6 +1065,18 @@ const styles = {
   },
 };
 
+const style = {
+  container: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+  },
+  refresh: {
+    left: '-10070px',
+  },
+};
+
+
 function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -1070,6 +1084,10 @@ function getRandomIntInclusive(min, max) {
 class SearchResults extends Component {
   constructor(props) {
     super(props);
+    console.log(props);
+    this.state = {
+      results: []
+    }
   }
 
   static contextTypes = {
@@ -1078,6 +1096,12 @@ class SearchResults extends Component {
 
   componentWillMount() {
     this.context.onSetTitle(title);
+    fetch('/api/yelp').then(response => {
+      return response.json();
+    })
+    .then(json => {
+      this.setState({results: json});
+    })
   }
 
   _handleTileClick(e) {
@@ -1091,27 +1115,31 @@ class SearchResults extends Component {
 
   render() {
 
-    //_sampleData.businesses.forEach(ele => {
-    //  ele.cols = getRandomIntInclusive(1,2);
-    //  ele.rows = ele.cols;
-    //});
+    const { width, height } = this.props.viewport;
 
-    // If width is greater than 900 show 4 cols
-    // If width is greater than 723 and less than 900 show 3
-    // If width is greater than
-    // 221
+    style.container.top = height / 2 - 25;
+    style.container.left = width / 2 - 25;
+
+    if (this.state.results.length === 0) {
+      return (
+        <div style={style.container}>
+          <RefreshIndicator size={50} left={70} top={0} loadingColor={"#FF9800"} status="loading"
+                               style={style.refresh}/>
+        </div>
+      );
+    }
+
     const cellWidth = 182;
     const cellHeight = 244;
     const cellPadding = 4;
-    const { width, height } = this.props.viewport;
-    var cols = Math.floor((width - 31) / (cellWidth + 2 * cellPadding));
+    const cols = Math.floor((width - 31) / (cellWidth + 2 * cellPadding));
     styles.gridList.width = cols * (cellWidth + 2 * cellPadding);
 
     return (
       <div className={s.root}>
         <div style={styles.root}>
           <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
-            {_sampleData.businesses.map(business => (
+            {this.state.results.businesses.map(business => (
               <GridTile key={business.name} style={styles.gridTile}
                         cols={1} rows={1}>
                 <div className={s.gridImageContainer} onClick={this._handleTileClick}>
