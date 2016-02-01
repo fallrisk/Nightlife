@@ -1103,35 +1103,31 @@ class SearchResults extends Component {
     const cellWidth = 182;
     const cellHeight = 244;
     const cellPadding = 4;
-    const { viewportWidth, height } = this.props.viewport;
-    var cols = (viewportWidth - 100) / (cellWidth + 2 * cellPadding);
-    cols = 4;
+    const { width, height } = this.props.viewport;
+    var cols = Math.floor((width - 31) / (cellWidth + 2 * cellPadding));
     styles.gridList.width = cols * (cellWidth + 2 * cellPadding);
-
 
     return (
       <div className={s.root}>
-        <div className={s.container}>
-          <div className={styles.root}>
-            <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
-              {_sampleData.businesses.map(business => (
-                <GridTile key={business.name} style={styles.gridTile}
-                          cols={1} rows={1}>
-                  <div className={s.gridImageContainer} onClick={this._handleTileClick}>
-                    <img className={s.gridImage} src={business.image_url}/>
-                  </div>
-                  <div className={s.gridInfoContainer}>
-                    <div className={s.gridTitle} onClick={this._handleTileClick}>{business.name}</div>
-                    <div className={s.gridAttendees} onClick={this._handleTileClick}>19 attendees</div>
-                    <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
-                                onClick={this._handleAttending} rippleColor="whitesmoke" tooltipPosition="top-left">
-                      <FontIcon className="material-icons" style={styles.imGoingButton} color={'whitesmoke'}>plus_one</FontIcon>
-                    </IconButton>
-                  </div>
-                </GridTile>
-              ))}
-            </GridList>
-          </div>
+        <div style={styles.root}>
+          <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
+            {_sampleData.businesses.map(business => (
+              <GridTile key={business.name} style={styles.gridTile}
+                        cols={1} rows={1}>
+                <div className={s.gridImageContainer} onClick={this._handleTileClick}>
+                  <img className={s.gridImage} src={business.image_url}/>
+                </div>
+                <div className={s.gridInfoContainer}>
+                  <div className={s.gridTitle} onClick={this._handleTileClick}>{business.name}</div>
+                  <div className={s.gridAttendees} onClick={this._handleTileClick}>19 attendees</div>
+                  <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
+                              onClick={this._handleAttending} rippleColor="whitesmoke" tooltipPosition="top-left">
+                    <FontIcon className="material-icons" style={styles.imGoingButton} color={'whitesmoke'}>plus_one</FontIcon>
+                  </IconButton>
+                </div>
+              </GridTile>
+            ))}
+          </GridList>
         </div>
       </div>
     );
