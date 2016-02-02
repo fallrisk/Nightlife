@@ -11,34 +11,115 @@ import React, { Component } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Header.scss';
 import Link from '../Link';
+import Location from '../../core/Location';
 import Navigation from '../Navigation';
+
 import AppBar from 'material-ui/lib/app-bar';
 import IconButton from 'material-ui/lib/icon-button';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
-import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import TextField from 'material-ui/lib/text-field';
 import RaisedButton from 'material-ui/lib/raised-button';
-import Toolbar from 'material-ui/lib/toolbar/toolbar';
-import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-import ToolbarSeparator from 'material-ui/lib/toolbar/toolbar-separator';
-import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import FlatButton from 'material-ui/lib/flat-button';
 import FontIcon from 'material-ui/lib/font-icon';
-import Location from '../../core/Location';
-import LeftNav from 'material-ui/lib/left-nav';
 import Colors from 'material-ui/lib/styles/colors';
+import Divider from 'material-ui/lib/divider';
+import Toggle from 'material-ui/lib/toggle';
+import Avatar from 'material-ui/lib/avatar';
+import Popover from 'material-ui/lib/popover/popover';
 
-const iconStyles = {
-  marginRight: 24,
-};
-
-const appBarStyles = {
+var appBarStyles = {
   height: '200px',
   background: 'none',
   backgroundImage: `url('google_inspired_wallpaper__night__by_brebenel_silviu-d6pg3lr.jpg')`,
-  backgroundPosition: '60% 50%', // THis is fucking cool. This is how I will do simple parallax effect.
+  backgroundPosition: '60% 50%', // This is fucking cool. This is how I will do simple parallax effect.
   marginBottom: '10px',
+};
+
+const styles = {
+  textField: {
+    backgroundColor: 'white',
+    height: '38px',
+  },
+  avatar: {
+    position: 'relative',
+    top: 7,
+    marginLeft: 20,
+    marginRight: 20,
+    cursor: 'pointer',
+    paddingTop: '0',
+    backgroundColor: 'white',
+  },
+  avatar2: {
+    color: 'black',
+  },
+  popover: {
+    padding: '10px',
+  },
+  toggle: {
+  },
+  toggleLabelStyle: {
+    display: 'inline',
+    width: '300px',
+    color: 'whitesmoke',
+  },
+};
+
+var boxMullerRandom = (function () {
+  var phase = 0,
+    RAND_MAX,
+    array,
+    random,
+    x1, x2, w, z;
+
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    RAND_MAX = Math.pow(2, 32) - 1;
+    array = new Uint32Array(1);
+    random = function () {
+      crypto.getRandomValues(array);
+
+      return array[0] / RAND_MAX;
+    };
+  } else {
+    random = Math.random;
+  }
+
+  return function () {
+    if (!phase) {
+      do {
+        x1 = 2.0 * random() - 1.0;
+        x2 = 2.0 * random() - 1.0;
+        w = x1 * x1 + x2 * x2;
+      } while (w >= 1.0);
+
+      w = Math.sqrt((-2.0 * Math.log(w)) / w);
+      z = x1 * w;
+    } else {
+      z = x2 * w;
+    }
+
+    phase ^= 1;
+
+    return z;
+  }
+}());
+
+function randomWalk(steps, randFunc) {
+  steps = steps >>> 0 || 100;
+  if (typeof randFunc !== 'function') {
+    randFunc = boxMullerRandom;
+  }
+
+  var points = [],
+    value = 0,
+    t;
+
+  for (t = 0; t < steps; t += 1) {
+    value += randFunc();
+    points.push([t, value]);
+  }
+
+  return points;
 }
 
 class Header extends Component {
@@ -48,45 +129,94 @@ class Header extends Component {
     this.state = {
       query: '',
       navigationOpen: false,
+      movementX: randomWalk(),
+      movementY: randomWalk(),
+      currentIndex: 0,
+      avatarPopoverOpen: false,
+      textLocation: '',
+      geolocation: {},
+      reverseGeo: 'Loading...',
+    };
+
+    if (typeof navigator !== 'undefined') {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(this.setLocation);
+      }
     }
 
-    this._handleChange = this._handleChange.bind(this);
-    this._handleSearch = this._handleSearch.bind(this);
+    this._update = this._update.bind(this);
+    this._handleAvatarPopover = this._handleAvatarPopover.bind(this);
+    this.handleRequestClose = this.handleRequestClose.bind(this);
+    this._onLocationEnterKey = this._onLocationEnterKey.bind(this);
   }
 
-  _handleSearch(e) {
-    Location.push('/?q=' + this.state.query);
+  setLocation(position) {
+    this.setState({geolocation: position});
   }
 
-  _handleChange(e) {
+  componentDidMount() {
+    //setTimeout(this._update, 10000);
+  }
+
+  _update() {
+    var self = this;
+    appBarStyles.backgroundPosition = this.state.movementX[this.state.currentIndex][1] + '% ' + this.state.movementY[this.state.currentIndex][1] + '%';
+    this.setState({currentIndex: this.state.currentIndex + 1});
+    //setTimeout(self._update, 10000);
+    //this.forceUpdate();
+  }
+
+  _handleAvatarPopover(e) {
     this.setState({
-      query: e.target.value
+      avatarPopoverOpen: !this.state.avatarPopoverOpen,
+      popoverAnchor: e.currentTarget,
     });
   }
 
+  handleRequestClose() {
+    this.setState({
+      open: false,
+    });
+  };
+
+  _onLocationEnterKey(e) {
+    Location.push('/?l=' + e.target.value);
+  }
+
   render() {
+    //<Toggle style={styles.toggle} labelStyle={styles.toggleLabelStyle} labelPosition="right" label={'Use Geolocation: ' + this.state.reverseGeo}/>
     return (
       <div>
-        <AppBar title="Nightlife" showMenuIconButton={true}
-          style={appBarStyles}
-          onLeftIconButtonTouchTap={open => this.setState({open})}
+        <AppBar title="Nightlife" showMenuIconButton={false}
+          style={appBarStyles} zDepth={2}
           iconElementRight={
-            <div>
-              <IconButton>
-                <FontIcon className="material-icons" style={iconStyles} color={Colors.blue50}>person</FontIcon>
-              </IconButton>
+            <div className={s.appbarToolbar}>
+              <i className={'material-icons ' + s.locationIcon}>location_on</i>
+              <TextField inputStyle={styles.textField} hintText="Zipcode or City, State"
+                         underlineShow={false} onEnterKeyDown={this._onLocationEnterKey}/>
+              <Avatar style={styles.avatar} onClick={this._handleAvatarPopover}
+               icon={<i className={'material-icons ' + s.smallPersonIcon}>person</i>}/>
+              <Popover open={this.state.avatarPopoverOpen}
+                       anchorEl={this.state.popoverAnchor}
+                       anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                       targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                       useLayerForClickAway={false}
+                       onRequestClose={this.handleRequestClose}
+                       style={styles.popover}>
+                <div className={s.userbox}>
+                  <div className={s.topSection}>
+                    <i className={'material-icons ' + s.largerPersonIcon}>person</i>
+                    <span className={s.userTitle}>Hey stranger!</span>
+                  </div>
+                  <div className={s.bottomSection}>
+                    <RaisedButton label="Sign In"/>
+                  </div>
+                </div>
+              </Popover>
             </div>
           }
-        />
-        <LeftNav
-          docked={false}
-          width={200}
-          open={this.state.open}
-          onRequestChange={open => this.setState({open})}
         >
-          <MenuItem>Login</MenuItem>
-          <MenuItem>README</MenuItem>
-        </LeftNav>
+        </AppBar>
       </div>
     );
   }

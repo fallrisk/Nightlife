@@ -70,15 +70,7 @@ class MainPage extends Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <Paper zDepth={3} style={paperStyle}>
-            <p>What city do you want to look for bars in? You can use a zipcode or a city and state.</p>
-            <TextField value={this.state.textLocation} floatingLabelText="Zipcode/City, State"
-                       onChange={this._handleChange} onEnterKeyDown={this._handleEnterKey}/>
-            <RadioButtonGroup name="locationSource" defaultSelected="myinput">
-              <RadioButton value="geolocation" label="Geolocation"/>
-              <RadioButton value="myinput" label="My Input"/>
-            </RadioButtonGroup>
-          </Paper>
+          <p>Enter a location at the top or use your geolocation found by your browser.</p>
         </div>
       </div>
     );

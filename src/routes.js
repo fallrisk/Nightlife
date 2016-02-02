@@ -19,6 +19,7 @@ import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
 import MainPage from './components/MainPage';
 import SearchResults from './components/SearchResults';
+import BusinessPage from './components/BusinessPage';
 
 const router = new Router(on => {
   on('*', async (state, next) => {
@@ -27,8 +28,8 @@ const router = new Router(on => {
   });
 
   on('/', async (state) => {
-    if (typeof state.query.q !== 'undefined') {
-      return <SearchResults />
+    if (typeof state.query.l !== 'undefined') {
+      return <SearchResults l={state.query.l} />
     } else {
       return <MainPage />;
     }
@@ -39,6 +40,10 @@ const router = new Router(on => {
   on('/login', async () => <LoginPage />);
 
   on('/register', async () => <RegisterPage />);
+
+  on('/business/:businessId', async (state, next) => {
+    return <BusinessPage businessId={state.params.businessId}/>
+  });
 
   on('*', async (state) => {
     const response = await fetch(`/api/content?path=${state.path}`);

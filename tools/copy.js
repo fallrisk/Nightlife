@@ -23,6 +23,7 @@ async function copy({ watch } = {}) {
     ncp('src/public', 'build/public'),
     ncp('src/content', 'build/content'),
     ncp('package.json', 'build/package.json'),
+    ncp('README.md', 'build/README.md'),
   ]);
 
   replace({

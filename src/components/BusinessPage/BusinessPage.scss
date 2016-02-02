@@ -1,0 +1,85 @@
+/**
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+
+@import '../variables.scss';
+
+.root {
+
+}
+
+.container {
+  margin: 0 auto;
+  max-width: $max-content-width;
+  font-family: 'Roboto, sans-serif';
+}
+
+.gridTopInfoContainer {
+  background-color: #3E3E3E;
+  height: 48px;
+}
+
+.gridImageContainer {
+  width: 100%;
+  display: block;
+  background-color: #263257;
+  margin: 0;
+  padding: 0;
+  height: 176px;
+}
+
+.gridImage {
+  position: relative;
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: auto auto;
+  top: 40px;
+  padding: 0;
+}
+
+.gridInfoContainer {
+  background-color: #3E3E3E;
+  height: 68px;
+}
+
+.gridTitle {
+  /* TRBL */
+  margin: 0;
+  padding: 0;
+  position: relative;
+  top: 16px;
+  left: 16px;
+
+  font-size: 16px;
+  width: 120px;
+  color: whitesmoke;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: inline-block;
+}
+
+.gridAttendees {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  top: 16px;
+  left: 16px;
+  font-size: 16px;
+  width: 140px;
+  color: whitesmoke;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: inline-block;
+}

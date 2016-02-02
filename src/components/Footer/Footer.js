@@ -20,9 +20,11 @@ class Footer extends Component {
         <div className={s.container}>
           <span className={s.text}>© Justin Watson</span>
           <span className={s.spacer}>·</span>
-          <Link className={s.link} to="/">README</Link>
+          <Link className={s.link} to="/README">README</Link>
           <span className={s.spacer}>·</span>
-          <Link className={s.link} to="/privacy">GitHub</Link>
+          <a className={s.link} href="https://github.com/fallrisk/Nightlife">
+            <i className='fa fa-github-alt'></i><span>GitHub</span>
+          </a>
           <span className={s.spacer}>·</span>
           <Link className={s.link} to="/not-found">404 Page</Link>
         </div>

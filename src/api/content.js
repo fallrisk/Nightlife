@@ -13,6 +13,7 @@ import { Router } from 'express';
 import Promise from 'bluebird';
 import jade from 'jade';
 import fm from 'front-matter';
+import marked from 'marked';
 
 // A folder with Jade/Markdown/HTML content pages
 const CONTENT_DIR = join(__dirname, './content');
@@ -22,6 +23,12 @@ const parseJade = (path, jadeContent) => {
   const fmContent = fm(jadeContent);
   const htmlContent = jade.render(fmContent.body);
   return Object.assign({ path, content: htmlContent }, fmContent.attributes);
+};
+
+// Generate HTML from the Markdown.
+const parseMarkdown = (path, markdownContent) => {
+  const htmlContent = marked(markdownContent);
+  return {path, content: htmlContent};
 };
 
 const readFile = Promise.promisify(fs.readFile);
@@ -40,17 +47,28 @@ router.get('/', async (req, res, next) => {
       return;
     }
 
-    let fileName = join(CONTENT_DIR, `${path === '/' ? '/index' : path}.jade`);
-    if (!(await fileExists(fileName))) {
-      fileName = join(CONTENT_DIR, `${path}/index.jade`);
-    }
-
-    if (!(await fileExists(fileName))) {
-      res.status(404).send({ error: `The page '${path}' is not found.` });
+    if (path === '/README') {
+      let fileName = join(__dirname, './README.md');
+      if (!(await fileExists(fileName))) {
+        res.status(404).send({error: 'The README file could not be found.'});
+      } else {
+        const source = await readFile(fileName, {encoding: 'utf8'});
+        const content = parseMarkdown(path, source);
+        res.status(200).json(Object.assign(content, {title: 'README', component: 'ContentPage'}));
+      }
     } else {
-      const source = await readFile(fileName, { encoding: 'utf8' });
-      const content = parseJade(path, source);
-      res.status(200).send(content);
+      let fileName = join(CONTENT_DIR, `${path === '/' ? '/index' : path}.jade`);
+      if (!(await fileExists(fileName))) {
+        fileName = join(CONTENT_DIR, `${path}/index.jade`);
+      }
+
+      if (!(await fileExists(fileName))) {
+        res.status(404).send({ error: `The page '${path}' is not found.` });
+      } else {
+        const source = await readFile(fileName, { encoding: 'utf8' });
+        const content = parseJade(path, source);
+        res.status(200).send(content);
+      }
     }
   } catch (err) {
     next(err);

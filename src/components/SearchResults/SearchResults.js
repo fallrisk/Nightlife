@@ -1084,10 +1084,15 @@ function getRandomIntInclusive(min, max) {
 class SearchResults extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
+
     this.state = {
-      results: []
-    }
+      results: [],
+      l: this.props.l,
+    };
+
+    console.log('con: ', this.props.l, this.state.l);
+
+    this._getYelpResults = this._getYelpResults.bind(this);
   }
 
   static contextTypes = {
@@ -1095,26 +1100,58 @@ class SearchResults extends Component {
   };
 
   componentWillMount() {
-    this.context.onSetTitle(title);
-    fetch('/api/yelp').then(response => {
-      return response.json();
-    })
-    .then(json => {
-      this.setState({results: json});
-    })
+    //this.context.onSetTitle(title);
+    this._getYelpResults();
   }
 
-  _handleTileClick(e) {
-    console.log('Tile Clicked!');
+  componentDidMount() {
+    //console.log('Did Mount');
   }
 
-  _handleAttending(e) {
+  componentDidUpdate() {
+    //console.log('Did Update');
+  }
+
+  componentWillUpdate() {
+    //console.log('Will Update');
+  }
+
+  componentWillReceiveProps() {
+    //console.log('Will Receive Props', this.props.l, this.state.l);
+    this.setState({
+      results: [],
+      l: this.props.l,
+    });
+    this._getYelpResults();
+  }
+
+  shouldComponentUpdate() {
+    //console.log('Should Component Update', this.props.l);
+    //console.log('this.state.l:', this.state.l);
+
+    return true;
+  }
+
+  _getYelpResults() {
+    fetch('/api/yelp?l=' + this.props.l).then(response => {
+        return response.json();
+      })
+      .then(json => {
+        this.setState({results: json});
+      });
+  }
+
+  _handleTileClick(businessId, e) {
+    Location.push('/business/' + businessId);
+  }
+
+  _handleAttendingClick(e) {
     e.preventDefault();
     console.log('Attending!');
   }
 
   render() {
-
+    //console.log('Render', this.props.l, this.state.l);
     const { width, height } = this.props.viewport;
 
     style.container.top = height / 2 - 25;
@@ -1142,14 +1179,14 @@ class SearchResults extends Component {
             {this.state.results.businesses.map(business => (
               <GridTile key={business.name} style={styles.gridTile}
                         cols={1} rows={1}>
-                <div className={s.gridImageContainer} onClick={this._handleTileClick}>
+                <div className={s.gridImageContainer} onClick={this._handleTileClick.bind(this, business.id)}>
                   <img className={s.gridImage} src={business.image_url}/>
                 </div>
                 <div className={s.gridInfoContainer}>
-                  <div className={s.gridTitle} onClick={this._handleTileClick}>{business.name}</div>
-                  <div className={s.gridAttendees} onClick={this._handleTileClick}>19 attendees</div>
+                  <div className={s.gridTitle} onClick={this._handleTileClick.bind(this, business.id)}>{business.name}</div>
+                  <div className={s.gridAttendees} onClick={this._handleTileClick.bind(this, business.id)}>19 attendees</div>
                   <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
-                              onClick={this._handleAttending} rippleColor="whitesmoke" tooltipPosition="top-left">
+                              onClick={this._handleAttendingClick} rippleColor="whitesmoke" tooltipPosition="top-left">
                     <FontIcon className="material-icons" style={styles.imGoingButton} color={'whitesmoke'}>plus_one</FontIcon>
                   </IconButton>
                 </div>
