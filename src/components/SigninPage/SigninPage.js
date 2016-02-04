@@ -99,7 +99,10 @@ class SigninPage extends Component {
     });
   };
 
-  // TODO JKW: Fix the cancel button. Make it go back in history.
+  handleCancel = () => {
+    Location.goBack();
+  };
+
   render() {
     return (
       <div className={s.root}>
@@ -110,7 +113,8 @@ class SigninPage extends Component {
                        onChange={this._onInputChange} />
             <TextField name="password" style={buttonStyle} hintText="Password" type="password"
                        onChange={this._onInputChange} onEnterKeyDown={this._handleSignin} /><br/>
-            <RaisedButton style={buttonStyle} labelStyle={buttonLabelStyle} label="Cancel"/>
+            <RaisedButton style={buttonStyle} labelStyle={buttonLabelStyle} label="Cancel"
+                          onClick={this.handleCancel} />
             <RaisedButton style={buttonStyle} labelStyle={buttonLabelStyle} label="Sign in"
                           onClick={this._handleSignin} primary={true} />
           </Paper>
