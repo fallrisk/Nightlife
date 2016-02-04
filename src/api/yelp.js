@@ -8,6 +8,8 @@ const router = new Router();
 
 router.get('/', async (req, res, next) => {
   var results = await fetchYelp(req.query.l);
+  // Now append the attendees for the results.
+  var results = await Attendees.appendAttendees(results);
   res.status(200).json(results);
 });
 

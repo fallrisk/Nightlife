@@ -1091,8 +1091,6 @@ class SearchResults extends Component {
       l: this.props.l,
     };
 
-    console.log(this.props.user);
-
     this._getYelpResults = this._getYelpResults.bind(this);
   }
 
@@ -1177,9 +1175,11 @@ class SearchResults extends Component {
 
     const cellWidth = 182;
     const cellHeight = 244;
-    const cellPadding = 4;
+    const cellPadding = 10;
     const cols = Math.floor((width - 31) / (cellWidth + 2 * cellPadding));
     styles.gridList.width = cols * (cellWidth + 2 * cellPadding);
+
+    // TODO JKW: Change the style on the tiles so they look like they lift up on hover.
 
     return (
       <div className={s.root}>
@@ -1187,13 +1187,13 @@ class SearchResults extends Component {
           <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
             {this.state.results.businesses.map(business => (
               <GridTile key={business.name} style={styles.gridTile}
-                        cols={1} rows={1}>
+                        cols={1} rows={1} rootClass="blank">
                 <div className={s.gridImageContainer} onClick={this._handleTileClick.bind(this, business.id)}>
                   <img className={s.gridImage} src={business.image_url}/>
                 </div>
                 <div className={s.gridInfoContainer}>
                   <div className={s.gridTitle} onClick={this._handleTileClick.bind(this, business.id)}>{business.name}</div>
-                  <div className={s.gridAttendees} onClick={this._handleTileClick.bind(this, business.id)}>19 attendees</div>
+                  <div className={s.gridAttendees} onClick={this._handleTileClick.bind(this, business.id)}>{business.attendees} attendees</div>
                   {() => {
                       if (this.props.user.username === null) {
                         return ;

@@ -21,6 +21,7 @@ import bodyParser from 'body-parser';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import User from './api/users';
+import Attendees from './core/attendees';
 
 var debug = require('debug')('server');
 
@@ -43,6 +44,10 @@ server.use(session({
 }));
 server.use(passport.initialize());
 server.use(passport.session());
+
+Attendees.setSampleData();
+
+// TODO JKW: Fix session. It's not getting the SID correctly.
 
 //
 // Setup Passport session handlers.

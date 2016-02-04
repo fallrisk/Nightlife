@@ -119,7 +119,7 @@ router.get('/signout', (req, res) => {
 });
 
 router.get('/attending/:businessId', (req, res) => {
-  // If the user is not signed in we send an "Unauthorized status."
+  // If the user is not signed in then we send an "Unauthorized status."
   if (!req.user) {
     return res.status(401);
   }

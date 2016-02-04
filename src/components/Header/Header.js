@@ -133,6 +133,8 @@ class Header extends Component {
   constructor(props) {
     super(props);
 
+    this.setLocation = this.setLocation.bind(this);
+
     this.state = {
       query: '',
       navigationOpen: false,
@@ -204,7 +206,7 @@ class Header extends Component {
     return (
       <div>
         <AppBar title={<span className={s.title}>Nightlife</span>} showMenuIconButton={false}
-          style={appBarStyles} zDepth={2} onTitleTouchTap={this._handleTitleTouchTap}
+          style={appBarStyles} zDepth={3} onTitleTouchTap={this._handleTitleTouchTap}
           iconElementRight={
             <div className={s.appbarToolbar}>
               <i className={'material-icons ' + s.locationIcon}>location_on</i>
