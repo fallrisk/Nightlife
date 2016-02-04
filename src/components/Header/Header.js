@@ -38,7 +38,7 @@ var appBarStyles = {
 
 const styles = {
   textField: {
-    backgroundColor: 'white',
+    backgroundColor: '#fafafa',
     height: '38px',
   },
   avatar: {
@@ -48,13 +48,14 @@ const styles = {
     marginRight: 20,
     cursor: 'pointer',
     paddingTop: '0',
-    backgroundColor: 'white',
+    backgroundColor: '#fafafa',
   },
   avatar2: {
     color: 'black',
   },
   popover: {
     padding: '10px',
+    backgroundColor: '#fafafa',
   },
   toggle: {
   },
@@ -63,6 +64,12 @@ const styles = {
     width: '300px',
     color: 'whitesmoke',
   },
+  buttonLabelStyle: {
+    textTransform: 'none',
+  },
+  buttonStyle: {
+    marginLeft: 10,
+  }
 };
 
 var boxMullerRandom = (function () {
@@ -148,6 +155,7 @@ class Header extends Component {
     this._handleAvatarPopover = this._handleAvatarPopover.bind(this);
     this.handleRequestClose = this.handleRequestClose.bind(this);
     this._onLocationEnterKey = this._onLocationEnterKey.bind(this);
+    this._handleTitleTouchTap = this._handleTitleTouchTap.bind(this);
   }
 
   setLocation(position) {
@@ -175,7 +183,7 @@ class Header extends Component {
 
   handleRequestClose() {
     this.setState({
-      open: false,
+      avatarPopoverOpen: false,
     });
   };
 
@@ -183,12 +191,20 @@ class Header extends Component {
     Location.push('/?l=' + e.target.value);
   }
 
+  _handleTitleTouchTap(e) {
+    Location.push('/');
+  }
+
   render() {
     //<Toggle style={styles.toggle} labelStyle={styles.toggleLabelStyle} labelPosition="right" label={'Use Geolocation: ' + this.state.reverseGeo}/>
+    var self = this;
+
+    const signIn = () => {Location.push('/signin'); self.handleRequestClose();};
+
     return (
       <div>
-        <AppBar title="Nightlife" showMenuIconButton={false}
-          style={appBarStyles} zDepth={2}
+        <AppBar title={<span className={s.title}>Nightlife</span>} showMenuIconButton={false}
+          style={appBarStyles} zDepth={2} onTitleTouchTap={this._handleTitleTouchTap}
           iconElementRight={
             <div className={s.appbarToolbar}>
               <i className={'material-icons ' + s.locationIcon}>location_on</i>
@@ -206,10 +222,13 @@ class Header extends Component {
                 <div className={s.userbox}>
                   <div className={s.topSection}>
                     <i className={'material-icons ' + s.largerPersonIcon}>person</i>
-                    <span className={s.userTitle}>Hey stranger!</span>
+                    <span className={s.userTitle}>Hey stranger.</span>
                   </div>
                   <div className={s.bottomSection}>
-                    <RaisedButton label="Sign In"/>
+                    <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
+                                label="Sign in" onClick={signIn} />
+                    <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
+                                label="Register" />
                   </div>
                 </div>
               </Popover>

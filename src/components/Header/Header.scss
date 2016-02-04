@@ -22,38 +22,8 @@ $brand-color: #61dafb;
   max-width: $max-content-width;
 }
 
-.brand {
-  color: color($brand-color lightness(+10%));
-  text-decoration: none;
-  font-size: 1.75em; /* ~28px */
-}
-
-.brandTxt {
-  margin-left: 10px;
-}
-
-.nav {
-  float: right;
-  margin-top: 6px;
-}
-
-.banner {
-  text-align: center;
-}
-
-.bannerTitle {
-  margin: 0;
-  padding: 10px;
-  font-weight: normal;
-  font-size: 4em;
-  line-height: 1em;
-}
-
-.bannerDesc {
-  padding: 0;
-  color: rgba(255, 255, 255, .5);
-  font-size: 1.25em;
-  margin: 0;
+.title {
+  cursor: pointer;
 }
 
 .userbox {
@@ -61,22 +31,26 @@ $brand-color: #61dafb;
 }
 
 .userbox > .topSection {
-  width: 300px;
+  width: 250px;
   height: 70px;
 }
 
 .userbox > .bottomSection {
-  width: 300px;
+  width: 250px;
   height: 40px;
   padding-top: 5px;
   padding-left: 5px;
-  background-color: #263257;
+  //background-color: #263257;
+}
+
+.bottomSection > button {
+  float: right;
 }
 
 .topSection > .userTitle {
   position: relative;
   top: -30px;
-  left: 100px;
+  left: 50px;
 }
 
 .appbarToolbar {
@@ -91,13 +65,14 @@ $brand-color: #61dafb;
   font-size: 38px;
   width: 38px;
   height: 38px;
-  background-color: white;
+  background-color: #fafafa;
 }
 
 .largerPersonIcon {
   font-size: 60px;
   width: 60px;
   height: 60px;
+
 }
 
 .smallPersonIcon {
@@ -105,5 +80,5 @@ $brand-color: #61dafb;
   width: 25px;
   height: 25px;
   color: black;
-  background-color: white;
+  background-color: #fafafa;
 }

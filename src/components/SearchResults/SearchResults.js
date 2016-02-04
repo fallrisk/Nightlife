@@ -1053,6 +1053,7 @@ const styles = {
   },
   gridTile: {
     cursor: 'pointer',
+    boxShadow: '0 3px 10px rgba(0,0,0,0.16), 0 3px 10px rgba(0,0,0,0.23)',
   },
   imGoingButton: {
     color: 'whitesmoke',
@@ -1090,7 +1091,7 @@ class SearchResults extends Component {
       l: this.props.l,
     };
 
-    console.log('con: ', this.props.l, this.state.l);
+    console.log(this.props.user);
 
     this._getYelpResults = this._getYelpResults.bind(this);
   }
@@ -1118,17 +1119,17 @@ class SearchResults extends Component {
 
   componentWillReceiveProps() {
     //console.log('Will Receive Props', this.props.l, this.state.l);
-    this.setState({
-      results: [],
-      l: this.props.l,
-    });
-    this._getYelpResults();
+    if (this.props.l !== this.state.l) {
+      this.setState({
+        results: [],
+        l: this.props.l,
+      });
+      this._getYelpResults();
+    }
   }
 
   shouldComponentUpdate() {
-    //console.log('Should Component Update', this.props.l);
-    //console.log('this.state.l:', this.state.l);
-
+    //console.log('Should Component Update', this.props.l, this.state.l);
     return true;
   }
 
@@ -1145,9 +1146,17 @@ class SearchResults extends Component {
     Location.push('/business/' + businessId);
   }
 
-  _handleAttendingClick(e) {
+  _handleAttendingClick(businessId, e) {
     e.preventDefault();
-    console.log('Attending!');
+    console.log('Attending ', businessId);
+    fetch('/api/users/attending/' + businessId)
+    .then(response => {
+      return response.json();
+    }).then(json => {
+
+    }).catch(error => {
+      console.log('Failed to add RSVP: ', error);
+    });
   }
 
   render() {
@@ -1185,10 +1194,19 @@ class SearchResults extends Component {
                 <div className={s.gridInfoContainer}>
                   <div className={s.gridTitle} onClick={this._handleTileClick.bind(this, business.id)}>{business.name}</div>
                   <div className={s.gridAttendees} onClick={this._handleTileClick.bind(this, business.id)}>19 attendees</div>
-                  <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
-                              onClick={this._handleAttendingClick} rippleColor="whitesmoke" tooltipPosition="top-left">
-                    <FontIcon className="material-icons" style={styles.imGoingButton} color={'whitesmoke'}>plus_one</FontIcon>
-                  </IconButton>
+                  {() => {
+                      if (this.props.user.username === null) {
+                        return ;
+                      } else {
+                        return (
+                          <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
+                                      onClick={this._handleAttendingClick.bind(this, business.id)} rippleColor="whitesmoke" tooltipPosition="top-left">
+                            <FontIcon className="material-icons" style={styles.imGoingButton} color={'whitesmoke'}>plus_one</FontIcon>
+                          </IconButton>
+                        )
+                      }
+                    }
+                  }
                 </div>
               </GridTile>
             ))}

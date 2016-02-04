@@ -8,6 +8,7 @@
  */
 
 import 'babel-polyfill';
+import session from 'express-session';
 import path from 'path';
 import express from 'express';
 import React from 'react';
@@ -16,19 +17,83 @@ import Router from './routes';
 import Html from './components/Html';
 import assets from './assets';
 import { port } from './config';
+import bodyParser from 'body-parser';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import User from './api/users';
+
+var debug = require('debug')('server');
 
 const server = global.server = express();
 
 //
 // Register Node.js middleware
+// http://expressjs.com/en/advanced/best-practice-security.html
 // -----------------------------------------------------------------------------
 server.use(express.static(path.join(__dirname, 'public')));
+server.use(bodyParser.urlencoded({extended: false}));
+server.use(bodyParser.json());
+server.use(session({
+  // TODO JKW: This 'secret' should be pulled from an environment variable.
+  secret: '9087dfkj',
+  name: 'Nightlife',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+server.use(passport.initialize());
+server.use(passport.session());
+
+//
+// Setup Passport session handlers.
+// -----------------------------------------------------------------------------
+
+// Called when the user is autheticated successfully.
+passport.serializeUser(function(user, done) {
+  debug('SerializeUser', user.username);
+  done(null, user.username);
+});
+
+// Called when subsequent requests are made.
+passport.deserializeUser(function(username, done) {
+  debug('DeserializeUser', username);
+  User.findUserByUsername(username, function(err, user) {
+    debug('DeserializedUser', user);
+    done(err, user);
+  });
+});
+
+//
+// Setup Passport strategy.
+// -----------------------------------------------------------------------------
+passport.use(new LocalStrategy(
+  function (username, password, done) {
+    debug('LocalStrategy username is ' + username);
+    User.findUserByUsername(username, function (err, user) {
+      debug('User: ' + user);
+      if (err) {
+        debug('Error' + err);
+        return done(err);
+      }
+      if (!user) {
+        debug('Sent this');
+        return done(null, false, {message: 'Incorrect username.'});
+      }
+      if (!User.isCorrectPassword(user, password)) {
+        return done(null, false, {message: 'Incorrect password.'});
+      }
+      debug('Done OK');
+      return done(null, user);
+    })
+  }
+));
 
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
 server.use('/api/content', require('./api/content').default);
 server.use('/api/yelp', require('./api/yelp').default);
+server.use('/api/users', User.router);
 
 //
 // Register server-side rendering middleware

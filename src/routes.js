@@ -12,32 +12,46 @@ import Router from 'react-routing/src/Router';
 import fetch from './core/fetch';
 import App from './components/App';
 import ContentPage from './components/ContentPage';
-import ContactPage from './components/ContactPage';
-import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
 import MainPage from './components/MainPage';
 import SearchResults from './components/SearchResults';
 import BusinessPage from './components/BusinessPage';
+import SigninPage from './components/SigninPage';
 
 const router = new Router(on => {
+
   on('*', async (state, next) => {
+
+    // Must set the user object in state before calling "component = await next()".
+    const userResponse = await fetch('/api/users/check', {method: 'post'}).then(response => {
+      return response.json();
+    });
+    console.log('userResponse', userResponse);
+
+    const user = {
+      username: null,
+      isSignedin: false,
+    };
+
+    state.user = user;
+
     const component = await next();
-    return component && <App context={state.context}>{component}</App>;
+
+    return component && <App context={state.context} >{component}</App>;
   });
 
   on('/', async (state) => {
+    console.log('/');
     if (typeof state.query.l !== 'undefined') {
-      return <SearchResults l={state.query.l} />
+      return <SearchResults l={state.query.l} user={state.user} />
     } else {
       return <MainPage />;
     }
   });
 
-  on('/contact', async () => <ContactPage />);
-
-  on('/login', async () => <LoginPage />);
+  on('/signin', async () => <SigninPage />);
 
   on('/register', async () => <RegisterPage />);
 

@@ -5,6 +5,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
+ *
+ * https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
+ *
  */
 
 import React, { Component, PropTypes } from 'react';
@@ -14,14 +17,22 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import Paper from 'material-ui/lib/paper';
 import TextField from 'material-ui/lib/text-field';
 import Location from '../../core/Location';
-import RadioButton from 'material-ui/lib/radio-button';
-import RadioButtonGroup from 'material-ui/lib/radio-button-group';
+import Link from '../Link';
 
 const title = 'Nightlife';
 
 const paperStyle = {
-  height: '200px',
+  height: '400px',
   padding: '20px',
+  width: '100%',
+};
+
+const buttonStyle = {
+  marginLeft: 10,
+};
+
+const buttonLabelStyle = {
+  textTransform: 'none',
 };
 
 class MainPage extends Component {
@@ -30,48 +41,50 @@ class MainPage extends Component {
 
     this.state = {
       geolocation: {},
-      textLocation: '',
-      useGeo: false, // Use Geolocation or what was put into the textfield?
+      location: '',
     }
 
-    if (typeof navigator !== 'undefined') {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(this.setLocation);
-      }
-    }
-
-    this._handleChange = this._handleChange.bind(this);
+    this.setGeolocation = this.setGeolocation.bind(this);
     this._handleEnterKey = this._handleEnterKey.bind(this);
+    this._handleLocationChange = this._handleLocationChange.bind(this);
   }
 
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
   };
 
-  setLocation(position) {
+  setGeolocation(position) {
     this.setState({geolocation: position});
   }
 
   componentWillMount() {
     this.context.onSetTitle(title);
+    if (typeof navigator !== 'undefined') {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(this.setGeolocation);
+      }
+    }
   }
 
-  _handleChange(e) {
-    this.setState({textLocation: e.target.value});
+  _handleLocationChange(e) {
+    this.setState({location: e.target.value});
   }
 
   _handleEnterKey() {
-    console.log(this.state.textLocation);
-    console.log(this.state.geolocation);
-    Location.push('/?q=' + this.state.textLocation);
+    Location.push('/?l=' + this.state.location);
   }
 
   render() {
     return (
       <div className={s.root}>
-        <div className={s.container}>
-          <p>Enter a location at the top or use your geolocation found by your browser.</p>
-        </div>
+        <Paper style={paperStyle} zDepth={1}>
+          <p className={s.info}>Find local bars by entering your location.</p>
+          <TextField hintText="Zipcode or City, State" onEnterKeyDown={this._handleEnterKey}
+                     value={this.state.location} onChange={this._handleLocationChange} />
+          <RaisedButton style={buttonStyle} labelStyle={buttonLabelStyle} label="Find fun" primary={true}
+                        onClick={this._handleEnterKey} />
+          <p><Link to="/register">Register</Link> to let other people know you are attending.</p>
+        </Paper>
       </div>
     );
   }
