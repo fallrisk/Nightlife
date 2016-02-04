@@ -67,9 +67,10 @@ class SigninPage extends Component {
   _handleSignin() {
     fetch('/api/users/signin', {
       method: 'post',
+      credentials: 'same-origin',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         username: this.state.username,

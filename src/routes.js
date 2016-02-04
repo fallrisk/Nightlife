@@ -25,7 +25,10 @@ const router = new Router(on => {
   on('*', async (state, next) => {
 
     // Must set the user object in state before calling "component = await next()".
-    const userResponse = await fetch('/api/users/check', {method: 'post'}).then(response => {
+    const userResponse = await fetch('/api/users/check', {
+        method: 'post',
+        credentials: 'same-origin'
+    }).then(response => {
       return response.json();
     });
     console.log('userResponse', userResponse);

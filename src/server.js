@@ -32,22 +32,24 @@ const server = global.server = express();
 // http://expressjs.com/en/advanced/best-practice-security.html
 // -----------------------------------------------------------------------------
 server.use(express.static(path.join(__dirname, 'public')));
-server.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: false}));
 server.use(session({
   // TODO JKW: This 'secret' should be pulled from an environment variable.
   secret: '9087dfkj',
-  name: 'Nightlife',
+  name: 'NightlifeSID',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
 }));
+server.use((req, res, next) => {
+  debug(req.session);
+  next();
+});
 server.use(passport.initialize());
 server.use(passport.session());
 
 Attendees.setSampleData();
-
-// TODO JKW: Fix session. It's not getting the SID correctly.
 
 //
 // Setup Passport session handlers.
