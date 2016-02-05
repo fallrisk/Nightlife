@@ -1216,7 +1216,6 @@ class SearchResults extends Component {
       );
     }
     else {
-      console.log(this.props.user.username);
       return (
         <div className={s.root}>
           <div style={styles.root}>

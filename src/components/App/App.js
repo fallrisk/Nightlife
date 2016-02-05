@@ -21,6 +21,9 @@ injectTapEventPlugin();
 
 //@ThemeDecorator(ThemeManager.getMuiTheme(MyRawTheme))
 class App extends Component {
+  constructor(props) {
+    super(props);
+  }
 
   static propTypes = {
     context: PropTypes.shape({
@@ -63,7 +66,7 @@ class App extends Component {
   render() {
     return !this.props.error ? (
       <div>
-        <Header />
+        <Header user={this.props.user} />
         {this.props.children}
         <Footer />
       </div>

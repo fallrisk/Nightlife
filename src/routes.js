@@ -48,8 +48,7 @@ const router = new Router(on => {
     state.user = user;
 
     const component = await next();
-
-    return component && <App context={state.context} >{component}</App>;
+    return component && <App context={state.context} user={state.user}>{component}</App>;
   });
 
   on('/', async (state) => {

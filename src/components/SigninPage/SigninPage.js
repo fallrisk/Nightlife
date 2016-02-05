@@ -83,7 +83,7 @@ class SigninPage extends Component {
     }).then(response => {
       return response.json();
     }).then(json => {
-      console.log('Signin Results: ', json);
+      //console.log('Signin Results: ', json);
       if (json.isLoginSuccessful) {
         Location.push('/');
       } else {

@@ -128,6 +128,7 @@ function randomWalk(steps, randFunc) {
 
   return points;
 }
+// TODO JKW: If you click the AppBar anywhere it takes you to the index page. This is not desirable.
 
 class Header extends Component {
   constructor(props) {
@@ -203,6 +204,55 @@ class Header extends Component {
 
     const signIn = () => {Location.push('/signin'); self.handleRequestClose();};
 
+    var popover = (<div></div>);
+
+    if (this.props.user.username !== null) {
+      popover = (
+        <Popover open={this.state.avatarPopoverOpen}
+                 anchorEl={this.state.popoverAnchor}
+                 anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                 useLayerForClickAway={false}
+                 onRequestClose={this.handleRequestClose}
+                 style={styles.popover}>
+          <div className={s.userbox}>
+            <div className={s.topSection}>
+              <i className={'material-icons ' + s.largerPersonIcon}>person</i>
+              <span className={s.userTitle}>Hey {this.props.user.username}</span>
+            </div>
+            <div className={s.bottomSection}>
+              <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
+                          label="Sign out" onClick={signIn} />
+            </div>
+          </div>
+        </Popover>
+      );
+    }
+    else {
+      popover = (
+        <Popover open={this.state.avatarPopoverOpen}
+                 anchorEl={this.state.popoverAnchor}
+                 anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                 useLayerForClickAway={false}
+                 onRequestClose={this.handleRequestClose}
+                 style={styles.popover}>
+          <div className={s.userbox}>
+            <div className={s.topSection}>
+              <i className={'material-icons ' + s.largerPersonIcon}>person</i>
+              <span className={s.userTitle}>Hey stranger.</span>
+            </div>
+            <div className={s.bottomSection}>
+              <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
+                          label="Sign in" onClick={signIn} />
+              <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
+                          label="Register" />
+            </div>
+          </div>
+        </Popover>
+      );
+    }
+
     return (
       <div>
         <AppBar title={<span className={s.title}>Nightlife</span>} showMenuIconButton={false}
@@ -214,26 +264,7 @@ class Header extends Component {
                          underlineShow={false} onEnterKeyDown={this._onLocationEnterKey}/>
               <Avatar style={styles.avatar} onClick={this._handleAvatarPopover}
                icon={<i className={'material-icons ' + s.smallPersonIcon}>person</i>}/>
-              <Popover open={this.state.avatarPopoverOpen}
-                       anchorEl={this.state.popoverAnchor}
-                       anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                       targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                       useLayerForClickAway={false}
-                       onRequestClose={this.handleRequestClose}
-                       style={styles.popover}>
-                <div className={s.userbox}>
-                  <div className={s.topSection}>
-                    <i className={'material-icons ' + s.largerPersonIcon}>person</i>
-                    <span className={s.userTitle}>Hey stranger.</span>
-                  </div>
-                  <div className={s.bottomSection}>
-                    <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
-                                label="Sign in" onClick={signIn} />
-                    <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
-                                label="Register" />
-                  </div>
-                </div>
-              </Popover>
+              {popover}
             </div>
           }
         >

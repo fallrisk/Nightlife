@@ -75,6 +75,8 @@ class MainPage extends Component {
   }
 
   render() {
+    // TODO JKW: Make the text field have focus on page load.
+    // https://github.com/callemall/material-ui/issues/1594
     return (
       <div className={s.root}>
         <Paper style={paperStyle} zDepth={1}>
