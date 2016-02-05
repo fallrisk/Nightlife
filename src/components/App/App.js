@@ -66,7 +66,7 @@ class App extends Component {
   render() {
     return !this.props.error ? (
       <div>
-        <Header user={this.props.user} />
+        <Header user={this.props.user} location={this.props.location} />
         {this.props.children}
         <Footer />
       </div>

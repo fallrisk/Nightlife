@@ -58,6 +58,10 @@ class SigninPage extends Component {
     this.context.onSetTitle(title);
   }
 
+  componentDidMount() {
+    this._input.focus();
+  }
+
   _onInputChange(e) {
     var state = this.state;
     state[e.target.name] = e.target.value;
@@ -111,7 +115,8 @@ class SigninPage extends Component {
           <Paper style={paperStyle} zDepth={1}>
             <h1>{title}</h1>
             <TextField name="username" style={buttonStyle} hintText="Username"
-                       onChange={this._onInputChange} />
+                       onChange={this._onInputChange}
+                       ref={(c) => this._input = c} />
             <TextField name="password" style={buttonStyle} hintText="Password" type="password"
                        onChange={this._onInputChange} onEnterKeyDown={this._handleSignin} /><br/>
             <RaisedButton style={buttonStyle} labelStyle={buttonLabelStyle} label="Cancel"

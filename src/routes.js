@@ -46,9 +46,10 @@ const router = new Router(on => {
     });
 
     state.user = user;
+    let location = (typeof state.query.l !== 'undefined') ? state.query.l : '';
 
     const component = await next();
-    return component && <App context={state.context} user={state.user}>{component}</App>;
+    return component && <App context={state.context} user={state.user} location={location}>{component}</App>;
   });
 
   on('/', async (state) => {

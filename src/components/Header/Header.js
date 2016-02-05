@@ -133,7 +133,7 @@ class Header extends Component {
   constructor(props) {
     super(props);
 
-    this.setLocation = this.setLocation.bind(this);
+    this.setGeolocation = this.setGeolocation.bind(this);
 
     this.state = {
       query: '',
@@ -149,7 +149,7 @@ class Header extends Component {
 
     if (typeof navigator !== 'undefined') {
       if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(this.setLocation);
+        navigator.geolocation.getCurrentPosition(this.setGeolocation);
       }
     }
 
@@ -158,14 +158,20 @@ class Header extends Component {
     this.handleRequestClose = this.handleRequestClose.bind(this);
     this._onLocationEnterKey = this._onLocationEnterKey.bind(this);
     this._handleTitleTouchTap = this._handleTitleTouchTap.bind(this);
+    this._handleLocationChange = this._handleLocationChange.bind(this);
   }
 
-  setLocation(position) {
+  setGeolocation(position) {
     this.setState({geolocation: position});
   }
 
   componentDidMount() {
     //setTimeout(this._update, 10000);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('Header Component Will Receipt Props: ', nextProps);
+    this.setState({textLocation: nextProps.location});
   }
 
   _update() {
@@ -198,6 +204,10 @@ class Header extends Component {
       Location.push('/');
       return;
     }
+  }
+
+  _handleLocationChange(e) {
+    this.setState({textLocation: e.target.value});
   }
 
   render() {
@@ -263,7 +273,8 @@ class Header extends Component {
             <div className={s.appbarToolbar}>
               <i className={'material-icons ' + s.locationIcon}>edit_location</i>
               <TextField inputStyle={styles.textField} hintText="Zipcode or City, State"
-                         underlineShow={false} onEnterKeyDown={this._onLocationEnterKey}/>
+                         underlineShow={false} onEnterKeyDown={this._onLocationEnterKey}
+                         value={this.state.textLocation} onChange={this._handleLocationChange} />
               <Avatar style={styles.avatar} onClick={this._handleAvatarPopover}
                icon={<i className={'material-icons ' + s.smallPersonIcon}>person</i>}/>
               {popover}
