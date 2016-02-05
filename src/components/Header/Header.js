@@ -128,7 +128,6 @@ function randomWalk(steps, randFunc) {
 
   return points;
 }
-// TODO JKW: If you click the AppBar anywhere it takes you to the index page. This is not desirable.
 
 class Header extends Component {
   constructor(props) {
@@ -195,7 +194,10 @@ class Header extends Component {
   }
 
   _handleTitleTouchTap(e) {
-    Location.push('/');
+    if (e.target.innerHTML.toString() === 'Nightlife') {
+      Location.push('/');
+      return;
+    }
   }
 
   render() {
