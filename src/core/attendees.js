@@ -44,10 +44,20 @@ function add(businessId, attendee) {
 function appendAttendees(yelpData) {
   var promise = new Promise((resolve, reject) => {
     let i = 0;
+    let bizsToRemove = [];
 
     for (let yelpBusiness of yelpData.businesses) {
-      //console.log(yelpBusiness.id);
+
+      // Remove those with no image_url.
+      if (typeof yelpBusiness.image_url === 'undefined') {
+        console.log(yelpBusiness.id);
+        bizsToRemove.push(i);
+        i += 1;
+        continue;
+      }
+
       let attendees = _attendingsByBusiness.get(yelpBusiness.id);
+
       if (attendees !== undefined) {
         yelpData.businesses[i].attendees = attendees.length;
       } else {
@@ -55,6 +65,12 @@ function appendAttendees(yelpData) {
       }
       i += 1;
     }
+
+    for (i = 0; i < bizsToRemove.length; i++) {
+      console.log('removed: ', bizsToRemove[i]);
+      yelpData.businesses.splice(bizsToRemove[i], 1);
+    }
+
     resolve(yelpData);
   });
   return promise;

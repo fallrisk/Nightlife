@@ -209,7 +209,7 @@ class Header extends Component {
           style={appBarStyles} zDepth={3} onTitleTouchTap={this._handleTitleTouchTap}
           iconElementRight={
             <div className={s.appbarToolbar}>
-              <i className={'material-icons ' + s.locationIcon}>location_on</i>
+              <i className={'material-icons ' + s.locationIcon}>edit_location</i>
               <TextField inputStyle={styles.textField} hintText="Zipcode or City, State"
                          underlineShow={false} onEnterKeyDown={this._onLocationEnterKey}/>
               <Avatar style={styles.avatar} onClick={this._handleAvatarPopover}

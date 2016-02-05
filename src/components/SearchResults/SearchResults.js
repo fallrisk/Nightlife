@@ -1085,7 +1085,7 @@ function getRandomIntInclusive(min, max) {
 class SearchResults extends Component {
   constructor(props) {
     super(props);
-
+    //console.log(this.props);
     this.state = {
       results: [],
       l: this.props.l,
@@ -1158,6 +1158,7 @@ class SearchResults extends Component {
   }
 
   render() {
+    var self = this;
     //console.log('Render', this.props.l, this.state.l);
     const { width, height } = this.props.viewport;
 
@@ -1181,39 +1182,71 @@ class SearchResults extends Component {
 
     // TODO JKW: Change the style on the tiles so they look like they lift up on hover.
 
-    return (
-      <div className={s.root}>
-        <div style={styles.root}>
-          <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
-            {this.state.results.businesses.map(business => (
-              <GridTile key={business.name} style={styles.gridTile}
-                        cols={1} rows={1} rootClass="blank">
-                <div className={s.gridImageContainer} onClick={this._handleTileClick.bind(this, business.id)}>
-                  <img className={s.gridImage} src={business.image_url}/>
-                </div>
-                <div className={s.gridInfoContainer}>
-                  <div className={s.gridTitle} onClick={this._handleTileClick.bind(this, business.id)}>{business.name}</div>
-                  <div className={s.gridAttendees} onClick={this._handleTileClick.bind(this, business.id)}>{business.attendees} attendees</div>
-                  {() => {
-                      if (this.props.user.username === null) {
-                        return ;
-                      } else {
-                        return (
-                          <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
-                                      onClick={this._handleAttendingClick.bind(this, business.id)} rippleColor="whitesmoke" tooltipPosition="top-left">
-                            <FontIcon className="material-icons" style={styles.imGoingButton} color={'whitesmoke'}>plus_one</FontIcon>
-                          </IconButton>
-                        )
-                      }
-                    }
-                  }
-                </div>
-              </GridTile>
-            ))}
-          </GridList>
+    if (self.props.user.username === null) {
+      return (
+        <div className={s.root}>
+          <div style={styles.root}>
+            <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
+              {this.state.results.businesses.map(business => {
+                let image_url = business.image_url;
+                if (image_url !== undefined) {
+                  //console.log(image_url.substr(0, image_url.length - 6) + 'l.jpg');
+                  image_url = image_url.substr(0, image_url.length - 6) + 'l.jpg';
+                }
+                return (
+                <GridTile key={business.name} style={styles.gridTile}
+                          cols={1} rows={1}>
+                  <div className={s.gridImageContainer} onClick={this._handleTileClick.bind(this, business.id)}>
+                    <img className={s.gridImage}
+                         src={image_url}/>
+                  </div>
+                  <div className={s.gridInfoContainer}>
+                    <div className={s.gridTitle}
+                         onClick={this._handleTileClick.bind(this, business.id)}>{business.name}</div>
+                    <div className={s.gridAttendees}
+                         onClick={this._handleTileClick.bind(this, business.id)}>{business.attendees} attendees
+                    </div>
+                  </div>
+                </GridTile>
+              )})}
+            </GridList>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    else {
+      console.log(this.props.user.username);
+      return (
+        <div className={s.root}>
+          <div style={styles.root}>
+            <GridList cols={cols} cellHeight={cellHeight} padding={cellPadding} style={styles.gridList}>
+              {this.state.results.businesses.map(business => (
+                <GridTile key={business.name} style={styles.gridTile}
+                          cols={1} rows={1}>
+                  <div className={s.gridImageContainer} onClick={this._handleTileClick.bind(this, business.id)}>
+                    <img className={s.gridImage}
+                         src={business.image_url.substr(0, business.image_url.length - 6) + 'l.jpg'}/>
+                  </div>
+                  <div className={s.gridInfoContainer}>
+                    <div className={s.gridTitle}
+                         onClick={this._handleTileClick.bind(this, business.id)}>{business.name}</div>
+                    <div className={s.gridAttendees}
+                         onClick={this._handleTileClick.bind(this, business.id)}>{business.attendees} attendees
+                    </div>
+                    <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
+                                onClick={this._handleAttendingClick.bind(this, business.id)} rippleColor="whitesmoke"
+                                tooltipPosition="top-left">
+                      <FontIcon className="material-icons" style={styles.imGoingButton}
+                                color={'whitesmoke'}>plus_one</FontIcon>
+                    </IconButton>
+                  </div>
+                </GridTile>
+              ))}
+            </GridList>
+          </div>
+        </div>
+      );
+    }
   }
 
 }

@@ -23,20 +23,27 @@ import SigninPage from './components/SigninPage';
 const router = new Router(on => {
 
   on('*', async (state, next) => {
+    let user = {
+      username: null,
+      isSignedin: false,
+    };
 
     // Must set the user object in state before calling "component = await next()".
-    const userResponse = await fetch('/api/users/check', {
+    await fetch('/api/users/check', {
         method: 'post',
         credentials: 'same-origin'
     }).then(response => {
       return response.json();
+    }).then(json => {
+      //console.log(json);
+      if (json.hasOwnProperty('error')) {
+        user.username = null;
+        user.isSignedin = false;
+      } else {
+        user.username = json.username;
+        user.isSignedin = true;
+      }
     });
-    console.log('userResponse', userResponse);
-
-    const user = {
-      username: null,
-      isSignedin: false,
-    };
 
     state.user = user;
 
@@ -46,7 +53,6 @@ const router = new Router(on => {
   });
 
   on('/', async (state) => {
-    console.log('/');
     if (typeof state.query.l !== 'undefined') {
       return <SearchResults l={state.query.l} user={state.user} />
     } else {
