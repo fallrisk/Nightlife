@@ -36,7 +36,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: false}));
 server.use(session({
   // TODO JKW: This 'secret' should be pulled from an environment variable.
-  secret: '9087dfkj',
+  secret: '9087dfkj90a8s453sdpf8asd568af',
   name: 'NightlifeSID',
   resave: false,
   saveUninitialized: true,

@@ -235,6 +235,8 @@ class Header extends Component {
       });
     };
 
+    const register = () => {Location.push('/register'); self.handleRequestClose();};
+
     var popover = (<div></div>);
 
     if (this.props.user.username !== null) {
@@ -277,7 +279,7 @@ class Header extends Component {
               <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
                           label="Sign in" onClick={signIn} />
               <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
-                          label="Register" />
+                          label="Register" onClick={register} />
             </div>
           </div>
         </Popover>

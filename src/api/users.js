@@ -9,17 +9,20 @@ import Promise from 'bluebird';
 import lineReader from 'readline';
 import passport from 'passport';
 import Attendees from '../core/attendees';
+import bcrypt from 'bcrypt';
 
 var debug = require('debug')('api:users');
 
 const router = new Router();
+
+const _salt = bcrypt.genSaltSync(10);
 
 // Array of foul words we don't part of a username.
 var _foulWords = [];
 
 // User DB.
 var _users = [
-  {username: 'dandy', password: 'space'}
+  {username: 'dandy', password: bcrypt.hashSync('space', _salt)}
 ];
 
 // Load the list of foul words from the file and store them in an array.
@@ -39,29 +42,6 @@ function isUsernameSwearWord(username) {
   return false;
 }
 
-function processRegisterCommand(req, res) {
-  var p = Promise((resolve, reject) => {
-    if (req.body.command === 'isValidUsername') {
-      if (isUsernameAvailable(req.body.username) && !isUsernameSwearWord()) {
-        res.status(200).json({isValidUsername: true});
-      } else {
-        res.status(200).json({isValidUsername: false});
-      }
-      resolve();
-    }
-    res.status(200).json({error: 'Invalid command.', errorCode: 1});
-    resolve();
-  });
-  return p;
-}
-
-function createNewUser(req, res) {
-  debug(req.body);
-  _users.push({username: req.body.username, password: req.body.password});
-  res.status(200).json({response: 'New user created.'}
-  );
-}
-
 // -----------------------------------------------------------------------------
 
 router.post('/check', async (req, res) => {
@@ -75,14 +55,58 @@ router.post('/check', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-  // Here we register the user or send an error back because the form had an error.
-  if (req.query.command) {
-    return processRegisterCommand(req, res);
-  } else {
-    // Handle creating the new user.
-    debug('Creating user.');
-    createNewUser(req, res);
+  debug('Register');
+  debug(req.query, req.body, req.params);
+
+  if (typeof req.body.username === 'undefined'
+      || typeof  req.body.password  === 'undefined') {
+    res.status(200).json({
+      apiVersion: "1.0",
+      error: {
+        code: 1,
+        message: "Username or password not provided.",
+        errors: {
+          domain: "user",
+          reason: "InvalidUsernameOrPasswordException",
+          message: "Username or password not provided.",
+        }
+      }
+    });
+    return;
   }
+
+  let username = req.body.username;
+  let password = req.body.password;
+
+  if (username === '' || password === '') {
+    res.status(200).json({
+      apiVersion: "1.0",
+      error: {
+        code: 1,
+        message: "Username or password cannot be empty.",
+        errors: {
+          domain: "user",
+          reason: "InvalidUsernameOrPasswordException",
+          message: "Username or password not provided.",
+        }
+      }
+    });
+    return;
+  }
+
+  let passwordHash = bcrypt.hashSync(password, _salt);
+
+  _users.push({
+    username: username,
+    password: passwordHash,
+  });
+
+  res.status(200).json({
+    apiVersion: "1.0",
+    data: {
+      registrationComplete: true,
+    }
+  })
 });
 
 router.get('/foulList', (req, res) => {
@@ -157,7 +181,7 @@ export default {
     cb(false, false);
   },
   isCorrectPassword: (user, passwordToCheck) => {
-    if (user.password === passwordToCheck) {
+    if (bcrypt.compareSync(passwordToCheck, user.password, _salt)) {
       return true;
     }
     return false;
