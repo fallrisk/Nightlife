@@ -11,6 +11,27 @@
 
 $brand-color: #61dafb;
 
+// -----------------------------------------------------------------
+@keyframes example {
+  from {
+    background-position-y: 50%;
+  }
+  to {
+    background-position-y: 90%;
+  }
+}
+
+@-webkit-keyframes example {
+  from {
+    background-position-y: 50%;
+  }
+  to {
+    background-position-y: 90%;
+  }
+}
+
+// -----------------------------------------------------------------
+
 .root {
   background: #373277;
   color: #fff;

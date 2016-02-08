@@ -32,8 +32,18 @@ var appBarStyles = {
   height: '200px',
   background: 'none',
   backgroundImage: `url('google_inspired_wallpaper__night__by_brebenel_silviu-d6pg3lr.jpg')`,
-  backgroundPosition: '60% 50%', // This is fucking cool. This is how I will do simple parallax effect.
+  //backgroundPosition: '60% 50%', // This is fucking cool. This is how I will do simple parallax effect.
+  backgroundPositionY: '50%',
   marginBottom: '10px',
+  animationName: 'example',
+  animationDuration: '5s',
+  animationTimingFunction: 'ease-in-out',
+  animationDelay: '2s',
+  WebkitAnimationName: s.example,
+  WebkitAnimationDuration: '5s',
+  WebkitAnimationDelay: '2s',
+  WebkitAnimationTimingFunction: 'ease-in-out',
+  WebkitAnimationFillMode: 'forwards',
 };
 
 const styles = {

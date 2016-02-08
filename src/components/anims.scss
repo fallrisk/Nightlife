@@ -1,0 +1,22 @@
+
+
+@import './variables.scss';
+
+// -----------------------------------------------------------------
+@keyframes example {
+  from {
+    background-position-y: 50%;
+  }
+  to {
+    background-position-y: 90%;
+  }
+}
+
+@-webkit-keyframes example {
+  from {
+    background-position-y: 50%;
+  }
+  to {
+    background-position-y: 90%;
+  }
+}
