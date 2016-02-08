@@ -11,12 +11,18 @@ import GitRepo from 'git-repository';
 import run from './run';
 import fetch from './lib/fetch';
 
-// TODO: Update deployment URL
 // For more information visit http://gitolite.com/deploy.html
+//const getRemote = (slot) => ({
+//  name: slot ? slot : 'production',
+//  url: `https://example${slot ? `-${slot}` : ''}.scm.azurewebsites.net:443/example.git`,
+//  website: `http://example${slot ? `-${slot}` : ''}.azurewebsites.net`,
+//});
 const getRemote = (slot) => ({
   name: slot ? slot : 'production',
-  url: `https://example${slot ? `-${slot}` : ''}.scm.azurewebsites.net:443/example.git`,
-  website: `http://example${slot ? `-${slot}` : ''}.azurewebsites.net`,
+  //url: `https://git.heroku.com/aqueous-meadow-54899.git`,
+  url: `https://git.heroku.com/floating-journey-66582.git`,
+  //website: `http://aqueous-meadow-54899.herokuapp.com/`
+  website: `http://floating-journey-66582.herokuapp.com/`
 });
 
 /**
