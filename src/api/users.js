@@ -121,14 +121,22 @@ router.get('/signout', (req, res) => {
 router.get('/attending/:businessId', (req, res) => {
   // If the user is not signed in then we send an "Unauthorized status."
   if (!req.user) {
-    return res.status(401);
+    return res.status(401).json({success: false, error: 'You do not have permission to perform this action.'});;
   }
 
   let businessId = req.params.businessId;
   if (businessId) {
-    Attendees.add(businessId, user.username);
+    if (Attendees.isUserAttending(businessId, req.user.username)) {
+      debug('Removing user "' + req.user.username + '" from business "' + businessId + '."');
+      Attendees.remove(req.user.username, businessId);
+      return res.status(200).json({success: true, businessId: businessId});
+    } else {
+      debug('Adding user "' + req.user.username + '" to business "' + businessId + '."');
+      Attendees.add(businessId, req.user.username);
+      return res.status(200).json({success: true, businessId: businessId});
+    }
   } else {
-    return res.status(200).json({error: 'No business Id provided.'});
+    return res.status(200).json({success: false, error: 'No business Id provided.'});
   }
 });
 

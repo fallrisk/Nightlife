@@ -9,6 +9,8 @@ var _attendings = [];
 
 var _attendingsByBusiness = new Map();
 
+var _attendingsByUsername = new Map();
+
 class Attendee {
   constructor(businessId, username) {
     this.businessId = businessId;
@@ -32,6 +34,7 @@ function getSize(businessId) {
 function add(businessId, attendee) {
   _attendings.push(new Attendee(businessId, attendee));
   let biz = _attendingsByBusiness.get(businessId);
+  let user = _attendingsByUsername.get(attendee);
 
   if (biz === undefined) {
     _attendingsByBusiness.set(businessId, [attendee]);
@@ -39,6 +42,11 @@ function add(businessId, attendee) {
     biz.push(attendee);
   }
 
+  if (user === undefined) {
+    _attendingsByUsername.set(attendee, [businessId]);
+  } else {
+    user.push(businessId);
+  }
 }
 
 function appendAttendees(yelpData) {
@@ -50,7 +58,7 @@ function appendAttendees(yelpData) {
 
       // Remove those with no image_url.
       if (typeof yelpBusiness.image_url === 'undefined') {
-        console.log(yelpBusiness.id);
+        //console.log(yelpBusiness.id);
         bizsToRemove.push(i);
         i += 1;
         continue;
@@ -67,7 +75,7 @@ function appendAttendees(yelpData) {
     }
 
     for (i = 0; i < bizsToRemove.length; i++) {
-      console.log('removed: ', bizsToRemove[i]);
+      //console.log('removed: ', bizsToRemove[i]);
       yelpData.businesses.splice(bizsToRemove[i], 1);
     }
 
@@ -80,6 +88,46 @@ function setSampleData() {
   add('craft-beer-vault-rocklin', 'dandy');
 }
 
+function isUserAttending(businessId, username) {
+  let businesses = _attendingsByUsername.get(username);
+
+  if (businesses === undefined) {
+    return false;
+  } else {
+    let i = businesses.findIndex(e => {
+      return e === businessId;
+    });
+    if (i !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  return false;
+}
+
+function remove(username, businessId) {
+  let ai = _attendings.findIndex(ele => {
+    return businessId === ele.businessId && username === ele.username;
+  });
+
+  let b = _attendingsByBusiness.get(businessId);
+  if (b !== -1) {
+    let i = b.findIndex(ele => {
+      return username === ele;
+    });
+    _attendingsByBusiness.get(businessId).splice(i, 1);
+  }
+
+  let u = _attendingsByUsername.get(username);
+  if (u !== -1) {
+    let i = u.findIndex(ele => {
+      return businessId === ele;
+    });
+    _attendingsByUsername.get(username).splice(i, 1);
+  }
+}
+
 export default {
   get: get,
   getSize: getSize,
@@ -88,4 +136,6 @@ export default {
   Attendee: Attendee,
   appendAttendees: appendAttendees,
   setSampleData: setSampleData,
+  isUserAttending: isUserAttending,
+  remove: remove,
 };

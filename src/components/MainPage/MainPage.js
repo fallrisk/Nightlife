@@ -82,7 +82,7 @@ class MainPage extends Component {
   }
 
   render() {
-    // TODO JKW: Make the text field have focus on page load.
+    // Make the text field have focus on page load.
     // https://facebook.github.io/react/docs/more-about-refs.html
     // https://github.com/callemall/material-ui/issues/1594
     return (

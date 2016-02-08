@@ -216,6 +216,15 @@ class Header extends Component {
 
     const signIn = () => {Location.push('/signin'); self.handleRequestClose();};
 
+    const signOut = () => {
+      fetch('/api/users/signout', {
+        credentials: 'same-origin'
+      }).then(response => {
+        self.handleRequestClose();
+        Location.push('/');
+      });
+    };
+
     var popover = (<div></div>);
 
     if (this.props.user.username !== null) {
@@ -234,7 +243,7 @@ class Header extends Component {
             </div>
             <div className={s.bottomSection}>
               <FlatButton style={styles.buttonStyle} labelStyle={styles.buttonLabelStyle}
-                          label="Sign out" onClick={signIn} />
+                          label="Sign out" onClick={signOut} />
             </div>
           </div>
         </Popover>

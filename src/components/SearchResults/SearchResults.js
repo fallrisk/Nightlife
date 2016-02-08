@@ -1132,12 +1132,15 @@ class SearchResults extends Component {
   }
 
   _getYelpResults() {
-    fetch('/api/yelp?l=' + this.props.l).then(response => {
+    fetch('/api/yelp?l=' + this.props.l, {
+      credentials: 'same-origin'
+    })
+    .then(response => {
         return response.json();
-      })
-      .then(json => {
+    })
+    .then(json => {
         this.setState({results: json});
-      });
+    });
   }
 
   _handleTileClick(businessId, e) {
@@ -1147,11 +1150,13 @@ class SearchResults extends Component {
   _handleAttendingClick(businessId, e) {
     e.preventDefault();
     console.log('Attending ', businessId);
-    fetch('/api/users/attending/' + businessId)
+    fetch('/api/users/attending/' + businessId, {
+      credentials: 'same-origin'
+    })
     .then(response => {
       return response.json();
     }).then(json => {
-
+      this._getYelpResults();
     }).catch(error => {
       console.log('Failed to add RSVP: ', error);
     });
@@ -1216,6 +1221,7 @@ class SearchResults extends Component {
       );
     }
     else {
+
       return (
         <div className={s.root}>
           <div style={styles.root}>
@@ -1240,11 +1246,11 @@ class SearchResults extends Component {
                          onClick={this._handleTileClick.bind(this, business.id)}>
                       {business.attendees} attendees
                     </div>
-                    <IconButton style={styles.imGoingButtonContainer} tooltip="I'm attending!" touch={true}
+                    <IconButton style={styles.imGoingButtonContainer} tooltip={(business.isUserAttending) ? "I'm no longer attending." : "I'm attending!"} touch={true}
                                 onClick={this._handleAttendingClick.bind(this, business.id)} rippleColor="whitesmoke"
                                 tooltipPosition="top-left">
                       <FontIcon className="material-icons" style={styles.imGoingButton}
-                                color={'whitesmoke'}>plus_one</FontIcon>
+                                color={'whitesmoke'}>{(business.isUserAttending) ? 'cancel' : 'plus_one'}</FontIcon>
                     </IconButton>
                   </div>
                 </GridTile>
