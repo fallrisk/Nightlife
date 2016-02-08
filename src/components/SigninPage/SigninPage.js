@@ -89,7 +89,7 @@ class SigninPage extends Component {
     }).then(json => {
       //console.log('Signin Results: ', json);
       if (json.isLoginSuccessful) {
-        Location.push('/');
+        Location.goBack();
       } else {
         this.setState({snackbarOpen: true});
       }
